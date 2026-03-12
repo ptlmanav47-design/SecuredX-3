@@ -1,0 +1,15 @@
+{
+  "name": "securedx",
+  "version": "1.0.0",
+  "description": "SecuredX is a Discord security bot that protects your server with moderation tools, staff utilities, and whitelist management.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Manav",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.0.3"
+  }
+}
