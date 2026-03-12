@@ -1,1 +1,29 @@
+module.exports = {
+    name: 'ready',
+    once: true,
+    execute(client) {
+        console.log(`${client.user.tag} is online!`);
 
+        // Hourly moderation report
+        setInterval(() => {
+            client.guilds.cache.forEach(guild => {
+                const modChannel = guild.channels.cache.find(ch => ch.name === 'mod-log');
+                if (modChannel) {
+                    modChannel.send('Hourly moderation report placeholder.');
+                }
+            });
+        }, 60 * 60 * 1000); // every hour
+    }
+};
+module.exports = {
+    name: 'guildMemberAdd',
+    async execute(member) {
+        // Auto welcome message
+        const channel = member.guild.systemChannel;
+        if (channel) channel.send(`Welcome ${member.user.tag} to the server!`);
+
+        // Auto role assign
+        const role = member.guild.roles.cache.find(r => r.name === 'Member');
+        if (role) member.roles.add(role);
+    }
+};
