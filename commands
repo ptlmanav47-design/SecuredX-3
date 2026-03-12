@@ -1,1 +1,130 @@
+module.exports = {
+    name: 'ban',
+    description: 'Ban a user',
+    async execute(message, args) {
+        if (!message.member.permissions.has('BanMembers')) return message.reply("You can't ban!");
+        const user = message.mentions.members.first();
+        if (!user) return message.reply("Mention someone to ban.");
+        await user.ban({ reason: args.slice(1).join(" ") || 'No reason provided' });
+        message.channel.send(`${user.user.tag} has been banned!`);
+    }
+};
+module.exports = {
+    name: 'kick',
+    description: 'Kick a user',
+    async execute(message, args) {
+        if (!message.member.permissions.has('KickMembers')) return message.reply("You can't kick!");
+        const user = message.mentions.members.first();
+        if (!user) return message.reply("Mention someone to kick.");
+        await user.kick();
+        message.channel.send(`${user.user.tag} has been kicked!`);
+    }
+};
+module.exports = {
+    name: 'mute',
+    description: 'Mute a user',
+    async execute(message, args) {
+        if (!message.member.permissions.has('ModerateMembers')) return message.reply("You can't mute!");
+        const user = message.mentions.members.first();
+        if (!user) return message.reply("Mention someone to mute.");
+        let muteRole = message.guild.roles.cache.find(r => r.name === 'Muted');
+        if (!muteRole) muteRole = await message.guild.roles.create({ name: 'Muted', permissions: [] });
+        await user.roles.add(muteRole);
+        message.channel.send(`${user.user.tag} has been muted!`);
+    }
+};
+module.exports = {
+    name: 'unmute',
+    description: 'Unmute a user',
+    async execute(message, args) {
+        if (!message.member.permissions.has('ModerateMembers')) return message.reply("You can't unmute!");
+        const user = message.mentions.members.first();
+        if (!user) return message.reply("Mention someone to unmute.");
+        const muteRole = message.guild.roles.cache.find(r => r.name === 'Muted');
+        if (!muteRole) return message.reply("Mute role not found.");
+        await user.roles.remove(muteRole);
+        message.channel.send(`${user.user.tag} has been unmuted!`);
+    }
+};
+module.exports = {
+    name: 'tempban',
+    description: 'Temporarily ban a user',
+    async execute(message, args) {
+        if (!message.member.permissions.has('BanMembers')) return message.reply("You can't tempban!");
+        const user = message.mentions.members.first();
+        const duration = parseInt(args[1]);
+        if (!user || !duration) return message.reply("Mention user and time in minutes.");
+        await user.ban({ reason: 'Temporary ban' });
+        message.channel.send(`${user.user.tag} has been tempbanned for ${duration} minutes!`);
+        setTimeout(async () => {
+            await message.guild.members.unban(user.id);
+            message.channel.send(`${user.user.tag} has been unbanned!`);
+        }, duration * 60 * 1000);
+    }
+};
+module.exports = {
+    name: 'slowmode',
+    description: 'Set channel slowmode',
+    async execute(message, args) {
+        if (!message.member.permissions.has('ManageChannels')) return message.reply("You can't change slowmode!");
+        const seconds = parseInt(args[0]);
+        if (isNaN(seconds)) return message.reply("Specify time in seconds.");
+        await message.channel.setRateLimitPerUser(seconds);
+        message.channel.send(`Slowmode set to ${seconds} seconds!`);
+    }
+};
+module.exports = {
+    name: 'bulkdelete',
+    description: 'Delete multiple messages',
+    async execute(message, args) {
+        if (!message.member.permissions.has('ManageMessages')) return message.reply("You can't delete messages!");
+        const amount = parseInt(args[0]);
+        if (!amount || amount < 1 || amount > 100) return message.reply("Enter a number between 1-100.");
+        await message.channel.bulkDelete(amount, true);
+        message.channel.send(`${amount} messages deleted.`).then(msg => setTimeout(() => msg.delete(), 5000));
+    }
+};
+module.exports = {
+    name: 'sendmsg',
+    description: 'Send a message as bot',
+    async execute(message, args) {
+        const content = args.join(" ");
+        if (!content) return message.reply("Write a message to send.");
+        message.channel.send(content);
+    }
+};
+module.exports = {
+    name: 'userinfo',
+    description: 'Get user info',
+    async execute(message, args) {
+        const user = message.mentions.users.first() || message.author;
+        message.channel.send(`User: ${user.tag}\nID: ${user.id}\nCreated: ${user.createdAt}`);
+    }
+};
+module.exports = {
+    name: 'useravatar',
+    description: 'Get user avatar',
+    async execute(message, args) {
+        const user = message.mentions.users.first() || message.author;
+        message.channel.send(user.displayAvatarURL({ dynamic: true, size: 1024 }));
+    }
+};
+module.exports = {
+    name: 'wl',
+    description: 'Whitelist a user',
+    async execute(message, args) {
+        const user = message.mentions.members.first();
+        if (!user) return message.reply("Mention a user to whitelist.");
+        message.channel.send(`${user.user.tag} added to whitelist!`);
+    }
+};
+module.exports = {
+    name: 'botwl',
+    description: 'Whitelist a bot',
+    async execute(message, args) {
+        const bot = message.mentions.members.first();
+        if (!bot || !bot.user.bot) return message.reply("Mention a bot.");
+        message.channel.send(`${bot.user.tag} added to bot whitelist!`);
+    }
+};
 
