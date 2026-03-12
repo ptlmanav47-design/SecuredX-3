@@ -1,1 +1,41 @@
+// utils/utility.js
 
+module.exports = {
+  /**
+   * Check if a user is in a whitelist
+   * @param {string} userId - Discord user ID
+   * @param {Array} whitelist - Array of staff/allowed user IDs
+   * @returns {boolean}
+   */
+  isWhitelisted(userId, whitelist) {
+    return whitelist.includes(userId)
+  },
+
+  /**
+   * Capitalize the first letter of a string
+   * @param {string} text
+   * @returns {string}
+   */
+  capitalize(text) {
+    if (!text) return ""
+    return text.charAt(0).toUpperCase() + text.slice(1)
+  },
+
+  /**
+   * Format a number with commas
+   * @param {number} number
+   * @returns {string}
+   */
+  formatNumber(number) {
+    return number.toLocaleString()
+  },
+
+  /**
+   * Delay execution for a certain time
+   * @param {number} ms - milliseconds to wait
+   * @returns {Promise}
+   */
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+}
